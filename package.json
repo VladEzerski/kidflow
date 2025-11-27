@@ -1,6 +1,7 @@
 {
-  "name": "expo-template-default",
-  "license": "0BSD",
+  "name": "kidflow",
+  "license": "MIT",
+  "private": true,
   "main": "expo-router/entry",
   "version": "54.0.35",
   "scripts": {
