@@ -1,14 +1,12 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet } from 'react-native'
 
-import { ThemedText } from "@/components/themed-text"
-import { ThemedView } from "@/components/themed-view"
+import { ThemedText } from '@/components/themed-text'
+import { ThemedView } from '@/components/themed-view'
 
 export default function HomeScreen() {
   return (
-    <ThemedView style={{ flex: 1, padding: 16, justifyContent: "center" }}>
-      <ThemedText style={{ fontSize: 24, fontWeight: "600" }}>
-        KidFlow
-      </ThemedText>
+    <ThemedView style={{ flex: 1, padding: 16, justifyContent: 'center' }}>
+      <ThemedText style={{ fontSize: 24, fontWeight: '600' }}>KidFlow</ThemedText>
       <ThemedText style={{ marginTop: 8 }}>Dashboard Screen</ThemedText>
     </ThemedView>
     // <ParallaxScrollView
@@ -82,8 +80,8 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
   },
   stepContainer: {
@@ -95,6 +93,6 @@ const styles = StyleSheet.create({
     width: 290,
     bottom: 0,
     left: 0,
-    position: "absolute",
+    position: 'absolute',
   },
 })

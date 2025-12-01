@@ -1,14 +1,12 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet } from 'react-native'
 
-import { ThemedText } from "@/components/themed-text"
-import { ThemedView } from "@/components/themed-view"
+import { ThemedText } from '@/components/themed-text'
+import { ThemedView } from '@/components/themed-view'
 
 export default function HealthScreen() {
   return (
-    <ThemedView style={{ flex: 1, padding: 16, justifyContent: "center" }}>
-      <ThemedText style={{ fontSize: 20, fontWeight: "600" }}>
-        Health Screen
-      </ThemedText>
+    <ThemedView style={{ flex: 1, padding: 16, justifyContent: 'center' }}>
+      <ThemedText style={{ fontSize: 20, fontWeight: '600' }}>Health Screen</ThemedText>
       <ThemedText style={{ marginTop: 8 }}>
         The list of vaccinations and medical reminders will be here.
       </ThemedText>
@@ -102,13 +100,13 @@ export default function HealthScreen() {
 
 const styles = StyleSheet.create({
   headerImage: {
-    color: "#808080",
+    color: '#808080',
     bottom: -90,
     left: -35,
-    position: "absolute",
+    position: 'absolute',
   },
   titleContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 8,
   },
 })
