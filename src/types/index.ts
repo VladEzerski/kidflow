@@ -2,6 +2,7 @@ export type Kid = {
   id: string
   name: string
   birthDate: string
+  avatarColor: string
 }
 
 export type Vaccination = {
@@ -9,7 +10,7 @@ export type Vaccination = {
   kidId: string
   title: string
   date: string
-  status: "planned" | "pending" | "completed"
+  status: 'planned' | 'pending' | 'completed'
   notes?: string
 }
 
