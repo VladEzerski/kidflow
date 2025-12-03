@@ -5,15 +5,6 @@ export type Kid = {
   avatarColor: string
 }
 
-export type Vaccination = {
-  id: string
-  kidId: string
-  title: string
-  date: string
-  status: 'planned' | 'pending' | 'completed'
-  notes?: string
-}
-
 export type ActivitySchedule = {
   weekday: number
   time: string
