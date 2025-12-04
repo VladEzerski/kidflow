@@ -1,13 +1,22 @@
-import { ThemedText } from '@/components/themed-text'
-import { ThemedView } from '@/components/themed-view'
+import { View, FlatList } from 'react-native'
+
+import { useKidsStore } from '@/features/kids/store/kidsStore'
+import { ActivityCard } from '@/features/activities/components/ActivityCard'
+import { useActivityStore } from '@/features/activities/store/activitiesStore'
 
 export default function ActivitiesScreen() {
+  const activeKidId = useKidsStore(s => s.activeKidId)
+  const getActivitiesByKid = useActivityStore(s => s.getActivitiesByKid)
+
+  const activities = getActivitiesByKid(activeKidId)
+
   return (
-    <ThemedView style={{ flex: 1, padding: 16, justifyContent: 'center' }}>
-      <ThemedText style={{ fontSize: 20, fontWeight: '600' }}>Activities Screen</ThemedText>
-      <ThemedText style={{ marginTop: 8 }}>
-        There will be training sessions, classes, and payments for clubs here.
-      </ThemedText>
-    </ThemedView>
+    <View style={{ flex: 1, padding: 48 }}>
+      <FlatList
+        data={activities}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => <ActivityCard activity={item} />}
+      />
+    </View>
   )
 }
