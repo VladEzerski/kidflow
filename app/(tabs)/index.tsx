@@ -1,6 +1,7 @@
 import { View } from 'react-native'
 import { Avatar } from 'react-native-paper'
 
+import { Screen } from '@/layouts/Screen'
 import { useKidsStore } from '@/features/kids/store/kidsStore'
 
 export default function HomeScreen() {
@@ -9,11 +10,13 @@ export default function HomeScreen() {
   const activeKid = kids.find(k => k.id === activeKidId) || kids[0]
 
   return (
-    <View style={{ flex: 1, padding: 64, alignItems: 'center' }}>
-      <Avatar.Text
-        label={activeKid.name[0]}
-        style={{ backgroundColor: activeKid.avatarColor }}
-      ></Avatar.Text>
-    </View>
+    <Screen title={'Home'}>
+      <View style={{ flex: 1, alignItems: 'center' }}>
+        <Avatar.Text
+          label={activeKid.name[0]}
+          style={{ backgroundColor: activeKid.avatarColor }}
+        ></Avatar.Text>
+      </View>
+    </Screen>
   )
 }

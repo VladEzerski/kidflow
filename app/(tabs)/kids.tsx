@@ -1,9 +1,9 @@
-import React from 'react'
-import { FlatList, View } from 'react-native'
+import { FlatList } from 'react-native'
 import { Text } from 'react-native-paper'
 
 import { useKidsStore } from '@/features/kids/store/kidsStore'
 import { KidCard } from '@/features/kids/components/KidCard'
+import { Screen } from '@/layouts/Screen'
 
 export default function KidsScreen() {
   const kids = useKidsStore(s => s.kids)
@@ -11,7 +11,7 @@ export default function KidsScreen() {
   const setActiveKid = useKidsStore(s => s.setActiveKid)
 
   return (
-    <View style={{ flex: 1, paddingTop: 32 }}>
+    <Screen title={'Kids'}>
       <FlatList
         data={kids}
         keyExtractor={item => item.id}
@@ -28,6 +28,6 @@ export default function KidsScreen() {
           </Text>
         }
       />
-    </View>
+    </Screen>
   )
 }
