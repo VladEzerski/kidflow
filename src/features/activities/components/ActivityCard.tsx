@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { Card, Text } from 'react-native-paper'
 
-import { Activity, ACTIVITY_WEEKDAY_LABELS } from '../types'
+import { Activity, ACTIVITY_WEEKDAY_LABELS } from '@/types'
 
 type ActivityCardProps = {
   activity: Activity

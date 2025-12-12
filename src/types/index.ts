@@ -1,6 +1,3 @@
-export type Kid = {
-  id: string
-  name: string
-  birthDate: string
-  avatarColor: string
-}
+export * from './activities'
+export * from './kids'
+export * from './vaccinations'

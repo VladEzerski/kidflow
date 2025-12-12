@@ -3,7 +3,7 @@ import { Kid } from '@/types'
 export const kidsMock: Kid[] = [
   {
     id: 'kid_1',
-    name: 'Mark',
+    name: 'Markus',
     birthDate: '2022-04-15',
     avatarColor: '#ADD8E6',
   },

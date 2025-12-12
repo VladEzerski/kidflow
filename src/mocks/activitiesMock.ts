@@ -1,4 +1,4 @@
-import { Activity, ACTIVITY_WEEKDAY } from '@/features/activities/types'
+import { Activity, ACTIVITY_WEEKDAY } from '@/types'
 
 export const activitiesMock: Activity[] = [
   {

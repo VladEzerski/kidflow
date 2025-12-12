@@ -1,8 +1,7 @@
 import { create } from 'zustand'
 
 import { activitiesMock } from '@/mocks/activitiesMock'
-
-import { Activity } from '../types'
+import { Activity } from '@/types'
 
 export type VaccinationState = {
   activities: Activity[]

@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 import { vaccinationsMock } from '@/mocks/vaccinationsMock'
-import { Vaccination, VACCINATION_STATUS } from '../types'
+import { Vaccination, VACCINATION_STATUS } from '@/types'
 
 export type VaccinationState = {
   vaccinations: Vaccination[]
@@ -39,7 +39,7 @@ export const useVaccinationStore = create<VaccinationState>((set, get) => ({
     set(state => ({
       vaccinations: state.vaccinations.map(vac =>
         vac.id === id
-          ? { ...vac, status: VACCINATION_STATUS.COMPLETED, date: doneDate ?? vac.date }
+          ? { ...vac, status: VACCINATION_STATUS.COMPLETED, date: doneDate ?? vac.dueDate }
           : vac,
       ),
     })),
