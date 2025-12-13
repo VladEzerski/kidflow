@@ -6,7 +6,7 @@ import { PaperProvider } from 'react-native-paper'
 import 'react-native-reanimated'
 
 import { useColorScheme } from '@/hooks/use-color-scheme'
-import { db, migrate, seedIfEmpty } from '@/db'
+import { getDb, configureDb, migrate, seedIfEmpty } from '@/db'
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -16,12 +16,18 @@ export default function RootLayout() {
   const colorScheme = useColorScheme()
 
   useEffect(() => {
-    async function init() {
-      await migrate()
-      await seedIfEmpty(db)
+    async function initDb() {
+      try {
+        const db = await getDb()
+        await configureDb(db)
+        await migrate(db)
+        await seedIfEmpty(db)
+      } catch (e) {
+        console.error('DB INIT FAILED', e)
+      }
     }
 
-    init()
+    initDb()
   }, [])
 
   return (

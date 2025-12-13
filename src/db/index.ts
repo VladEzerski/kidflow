@@ -1,5 +1,5 @@
-import { db } from './client'
+import { getDb, configureDb } from './client'
 import { migrate } from './migrations'
 import { seedIfEmpty, resetAndSeed } from './seed'
 
-export { db, migrate, seedIfEmpty, resetAndSeed }
+export { getDb, configureDb, migrate, seedIfEmpty, resetAndSeed }

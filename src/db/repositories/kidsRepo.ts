@@ -32,13 +32,14 @@ export const kidsRepo = {
   async upsert(db: SQLiteDatabase, input: Omit<KidRow, 'createdAt' | 'updatedAt'>): Promise<void> {
     const now = new Date().toISOString()
     await db.runAsync(
-      `INSERT INTO kids (id, name, birtDate, createdAt, updatedAt)
-       VALUES (?, ?, ?, ?, ?)
+      `INSERT INTO kids (id, name, birthDate, avatarColor, createdAt, updatedAt)
+       VALUES (?, ?, ?, ?, ?, ?)
        ON CONFLICT(id) DO UPDATE SET
          name = excluded.name,
-         birtDate = excluded.birtDate,
+         birthDate = excluded.birthDate,
+         avatarColor = excluded.avatarColor,
          updatedAt = excluded.updatedAt;`,
-      [input.id, input.name, input.birthDate, now, now],
+      [input.id, input.name, input.birthDate, input.avatarColor, now, now],
     )
   },
 

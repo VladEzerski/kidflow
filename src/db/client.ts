@@ -1,8 +1,16 @@
 import * as SQLite from 'expo-sqlite'
+import type { SQLiteDatabase } from 'expo-sqlite'
 
-export const db = await SQLite.openDatabaseAsync('kidflow.db')
+let db: SQLiteDatabase | null = null
 
-export function configureDb() {
-  db.execAsync('PRAGMA foreign_keys = ON;')
-  db.execAsync('PRAGMA journal_mode = WAL;')
+export async function getDb() {
+  if (!db) {
+    db = await SQLite.openDatabaseAsync('kidflow.db')
+  }
+  return db
+}
+
+export async function configureDb(db: SQLiteDatabase) {
+  await db.execAsync('PRAGMA foreign_keys = ON;')
+  await db.execAsync('PRAGMA journal_mode = WAL;')
 }

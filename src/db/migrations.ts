@@ -1,4 +1,4 @@
-import { db } from './client'
+import type { SQLiteDatabase } from 'expo-sqlite'
 
 const MIGRATIONS: { id: number; sql: string[] }[] = [
   {
@@ -30,7 +30,7 @@ const MIGRATIONS: { id: number; sql: string[] }[] = [
         kidId TEXT NOT NULL,
         title TEXT NOT NULL,
         time TEXT NOT NULL,
-        completedAt TEXT NOT NULL, -- json string of numbers
+        weekdaysJson TEXT NOT NULL,
         nextPaymentDate TEXT,
         notes TEXT,
         createdAt TEXT NOT NULL,
@@ -44,8 +44,7 @@ const MIGRATIONS: { id: number; sql: string[] }[] = [
   },
 ]
 
-export async function migrate() {
-  await db.execAsync(`PRAGMA foreign_keys = ON;`)
+export async function migrate(db: SQLiteDatabase) {
   const row = await db.getFirstAsync<{ user_version: number }>(`PRAGMA user_version;`)
   const current = row?.user_version ?? 0
 
