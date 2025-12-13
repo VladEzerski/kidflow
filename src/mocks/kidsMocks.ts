@@ -13,4 +13,10 @@ export const kidsMock: Kid[] = [
     birthDate: '2020-11-02',
     avatarColor: '#FFB6C1',
   },
+  {
+    id: 'kid_3',
+    name: 'Eshton',
+    birthDate: '2018-09-17',
+    avatarColor: '#9F1D1D',
+  },
 ]
