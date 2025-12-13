@@ -4,12 +4,17 @@ import { Screen } from '@/layouts/Screen'
 import { useKidsStore } from '@/features/kids/store/kidsStore'
 import { VaccinationCard } from '@/features/vaccinations/components/VaccinationCard'
 import { useVaccinationStore } from '@/features/vaccinations/store/vaccinationsStore'
+import { useEffect } from 'react'
 
 export default function HealthScreen() {
   const activeKidId = useKidsStore(s => s.activeKidId)
-  const getVaccinationsByKid = useVaccinationStore(s => s.getVaccitinationsByKid)
+  const { vaccinations, loadByKid } = useVaccinationStore()
 
-  const vaccinations = getVaccinationsByKid(activeKidId)
+  useEffect(() => {
+    if (activeKidId) {
+      loadByKid(activeKidId)
+    }
+  }, [activeKidId, loadByKid])
 
   return (
     <Screen title={'Health'}>

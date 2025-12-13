@@ -1,51 +1,86 @@
 import { create } from 'zustand'
 
-import { vaccinationsMock } from '@/mocks/vaccinationsMock'
 import { Vaccination, VACCINATION_STATUS } from '@/types'
+import { getDb } from '@/db'
+import { vaccinationsRepo } from '@/db/repositories/vaccinationsRepo'
+import { vaccinationFromRow } from '@/db/mappers/vaccinations.mapper'
 
 export type VaccinationState = {
   vaccinations: Vaccination[]
-  setVaccinations: (items: Vaccination[]) => void
+  isLoading: boolean
+
+  loadByKid: (kidId: string) => Promise<void>
 
   addVaccination: (item: Vaccination) => void
   updateVaccination: (id: string, updates: Partial<Vaccination>) => void
   removeVaccination: (id: string) => void
 
   markVaccinationDone: (id: string, doneDate?: string) => void
-  getVaccitinationsByKid: (kidId: string) => Vaccination[]
 }
 
 export const useVaccinationStore = create<VaccinationState>((set, get) => ({
-  vaccinations: vaccinationsMock,
+  vaccinations: [],
+  isLoading: false,
 
-  setVaccinations: items => set({ vaccinations: items }),
+  loadByKid: async kidId => {
+    set({ isLoading: true })
 
-  addVaccination: item =>
+    try {
+      const db = await getDb()
+      const rows = await vaccinationsRepo.listByKid(db, kidId)
+      set({ vaccinations: rows.map(row => vaccinationFromRow(row)) })
+    } finally {
+      set({ isLoading: false })
+    }
+  },
+
+  addVaccination: async item => {
+    const db = await getDb()
+    await vaccinationsRepo.upsert(db, item)
+
     set(state => ({
       vaccinations: [...state.vaccinations, item],
-    })),
+    }))
+  },
 
-  updateVaccination: (id, updates) =>
+  updateVaccination: async (id, updates) => {
+    const existing = get().vaccinations.find(v => v.id === id)
+    if (!existing) return
+
+    const updated: Vaccination = { ...existing, ...updates }
+
+    const db = await getDb()
+    await vaccinationsRepo.upsert(db, updated)
+
     set(state => ({
-      vaccinations: state.vaccinations.map(vac => (vac.id === id ? { ...vac, ...updates } : vac)),
-    })),
+      vaccinations: state.vaccinations.map(vac => (vac.id === id ? updated : vac)),
+    }))
+  },
 
-  removeVaccination: id =>
+  removeVaccination: async id => {
+    const db = await getDb()
+    await vaccinationsRepo.remove(db, id)
+
     set(state => ({
       vaccinations: state.vaccinations.filter(vac => vac.id !== id),
-    })),
+    }))
+  },
 
-  markVaccinationDone: (id, doneDate) =>
+  markVaccinationDone: async (id, doneDate) => {
+    const existing = get().vaccinations.find(v => v.id === id)
+    if (!existing) return
+
+    const updated: Vaccination = {
+      ...existing,
+      status: VACCINATION_STATUS.COMPLETED,
+      completedAt: doneDate ?? new Date().toISOString(),
+    }
+
+    const db = await getDb()
+    await vaccinationsRepo.upsert(db, updated)
+
     set(state => ({
-      vaccinations: state.vaccinations.map(vac =>
-        vac.id === id
-          ? { ...vac, status: VACCINATION_STATUS.COMPLETED, date: doneDate ?? vac.dueDate }
-          : vac,
-      ),
-    })),
-
-  getVaccitinationsByKid: kidId => {
-    const { vaccinations } = get()
-    return vaccinations.filter(vac => vac.kidId === kidId)
+      vaccinations: state.vaccinations.map(vac => (vac.id === id ? updated : vac)),
+    }))
   },
 }))
