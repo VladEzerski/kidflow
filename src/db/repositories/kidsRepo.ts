@@ -12,7 +12,7 @@ export type KidRow = {
 export const kidsRepo = {
   async list(db: SQLiteDatabase): Promise<KidRow[]> {
     const res = await db.getAllAsync<KidRow>(
-      `SELECT id, name, birthDate, createdAt, updatedAt
+      `SELECT id, name, birthDate, avatarColor, createdAt, updatedAt
        FROM kids
        ORDER BY createdAt DESC;`,
     )
@@ -21,7 +21,7 @@ export const kidsRepo = {
 
   async getById(db: SQLiteDatabase, id: string): Promise<KidRow | null> {
     const row = await db.getFirstAsync<KidRow>(
-      `SELECT id, name, birthDate, createdAt, updatedAt
+      `SELECT id, name, birthDate, avatarColor, createdAt, updatedAt
        FROM kids
        WHERE id = ?;`,
       [id],
