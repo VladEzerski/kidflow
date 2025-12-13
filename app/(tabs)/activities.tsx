@@ -4,12 +4,17 @@ import { Screen } from '@/layouts/Screen'
 import { useKidsStore } from '@/features/kids/store/kidsStore'
 import { ActivityCard } from '@/features/activities/components/ActivityCard'
 import { useActivityStore } from '@/features/activities/store/activitiesStore'
+import { useEffect } from 'react'
 
 export default function ActivitiesScreen() {
   const activeKidId = useKidsStore(s => s.activeKidId)
-  const getActivitiesByKid = useActivityStore(s => s.getActivitiesByKid)
+  const { activities, loadByKid } = useActivityStore()
 
-  const activities = getActivitiesByKid(activeKidId)
+  useEffect(() => {
+    if (activeKidId) {
+      loadByKid(activeKidId)
+    }
+  }, [activeKidId, loadByKid])
 
   return (
     <Screen title={'Activities'}>

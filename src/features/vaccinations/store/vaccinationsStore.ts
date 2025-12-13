@@ -3,7 +3,7 @@ import { create } from 'zustand'
 import { Vaccination, VACCINATION_STATUS } from '@/types'
 import { getDb } from '@/db'
 import { vaccinationsRepo } from '@/db/repositories/vaccinationsRepo'
-import { vaccinationFromRow } from '@/db/mappers/vaccinations.mapper'
+import { vaccinationFromRow, vaccinationToRowInput } from '@/db/mappers/vaccinations.mapper'
 
 export type VaccinationState = {
   vaccinations: Vaccination[]
@@ -36,7 +36,7 @@ export const useVaccinationStore = create<VaccinationState>((set, get) => ({
 
   addVaccination: async item => {
     const db = await getDb()
-    await vaccinationsRepo.upsert(db, item)
+    await vaccinationsRepo.upsert(db, vaccinationToRowInput(item))
 
     set(state => ({
       vaccinations: [...state.vaccinations, item],
@@ -50,7 +50,7 @@ export const useVaccinationStore = create<VaccinationState>((set, get) => ({
     const updated: Vaccination = { ...existing, ...updates }
 
     const db = await getDb()
-    await vaccinationsRepo.upsert(db, updated)
+    await vaccinationsRepo.upsert(db, vaccinationToRowInput(updated))
 
     set(state => ({
       vaccinations: state.vaccinations.map(vac => (vac.id === id ? updated : vac)),
@@ -77,7 +77,7 @@ export const useVaccinationStore = create<VaccinationState>((set, get) => ({
     }
 
     const db = await getDb()
-    await vaccinationsRepo.upsert(db, updated)
+    await vaccinationsRepo.upsert(db, vaccinationToRowInput(updated))
 
     set(state => ({
       vaccinations: state.vaccinations.map(vac => (vac.id === id ? updated : vac)),
