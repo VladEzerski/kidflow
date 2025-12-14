@@ -1,20 +1,37 @@
+import { useEffect } from 'react'
 import { View, FlatList } from 'react-native'
+import { Text } from 'react-native-paper'
 
 import { Screen } from '@/layouts/Screen'
 import { useKidsStore } from '@/features/kids/store/kidsStore'
 import { VaccinationCard } from '@/features/vaccinations/components/VaccinationCard'
 import { useVaccinationStore } from '@/features/vaccinations/store/vaccinationsStore'
-import { useEffect } from 'react'
+import { useAddAction } from '@/features/addAction'
 
 export default function HealthScreen() {
   const activeKidId = useKidsStore(s => s.activeKidId)
   const { vaccinations, loadByKid } = useVaccinationStore()
+  const { register } = useAddAction()
 
   useEffect(() => {
     if (activeKidId) {
       loadByKid(activeKidId)
     }
   }, [activeKidId, loadByKid])
+
+  useEffect(() => {
+    const unregister = register({
+      key: 'health',
+      title: 'Add vaccination',
+      render: () => (
+        <View>
+          <Text variant="titleMedium">Render health content...</Text>
+        </View>
+      ),
+    })
+
+    return unregister
+  }, [register])
 
   return (
     <Screen title={'Health'}>
