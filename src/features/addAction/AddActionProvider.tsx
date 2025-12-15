@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
   },
   sheetContent: {
     flex: 1,
+    paddingHorizontal: 8,
   },
   sheetTitle: {
     backgroundColor: '#3c3939',
