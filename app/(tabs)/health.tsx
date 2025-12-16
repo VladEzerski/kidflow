@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { View, FlatList } from 'react-native'
 
 import { Screen } from '@/layouts/Screen'
@@ -7,6 +7,7 @@ import { VaccinationCard } from '@/features/vaccinations/components/VaccinationC
 import { AddingVaccinationContent } from '@/features/vaccinations/components/AddingVaccinationContent/AddingVaccinationContent'
 import { useVaccinationStore } from '@/features/vaccinations/store/vaccinationsStore'
 import { useAddAction } from '@/features/addAction'
+import { useFocusEffect } from 'expo-router'
 
 export default function HealthScreen() {
   const activeKidId = useKidsStore(s => s.activeKidId)
@@ -19,15 +20,21 @@ export default function HealthScreen() {
     }
   }, [activeKidId, loadByKid])
 
-  useEffect(() => {
-    const unregister = register({
-      key: 'health',
-      title: 'Add vaccination',
-      render: () => <AddingVaccinationContent />,
-    })
+  useFocusEffect(
+    useCallback(() => {
+      console.log('Healh screen focused')
+      const unregister = register({
+        key: 'health',
+        title: 'Add vaccination',
+        render: () => <AddingVaccinationContent />,
+      })
 
-    return unregister
-  }, [register])
+      return () => {
+        console.log('Healh screen unfocused')
+        unregister()
+      }
+    }, [register]),
+  )
 
   return (
     <Screen title={'Health'}>

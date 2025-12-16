@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { FlatList, View } from 'react-native'
 import { Text } from 'react-native-paper'
 
@@ -6,6 +6,7 @@ import { useKidsStore } from '@/features/kids/store/kidsStore'
 import { KidCard } from '@/features/kids/components/KidCard'
 import { Screen } from '@/layouts/Screen'
 import { useAddAction } from '@/features/addAction'
+import { useFocusEffect } from 'expo-router'
 
 export default function KidsScreen() {
   const kids = useKidsStore(s => s.kids)
@@ -14,19 +15,25 @@ export default function KidsScreen() {
 
   const { register } = useAddAction()
 
-  useEffect(() => {
-    const unregister = register({
-      key: 'kids',
-      title: 'Add new kid',
-      render: () => (
-        <View>
-          <Text variant="titleMedium">Render kids content...</Text>
-        </View>
-      ),
-    })
+  useFocusEffect(
+    useCallback(() => {
+      console.log('Kids screen focused')
+      const unregister = register({
+        key: 'kids',
+        title: 'Add new kid',
+        render: () => (
+          <View>
+            <Text variant="titleMedium">Render kids content...</Text>
+          </View>
+        ),
+      })
 
-    return unregister
-  }, [register])
+      return () => {
+        console.log('Kids screen unfocused')
+        unregister()
+      }
+    }, [register]),
+  )
 
   return (
     <Screen title={'Kids'}>

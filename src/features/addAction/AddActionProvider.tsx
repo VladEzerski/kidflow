@@ -10,6 +10,8 @@ export const AddActionProvider = ({ children }: { children: ReactNode }) => {
   const sheetRef = useRef<BottomSheet>(null)
   const [current, setCurrent] = useState<AddActionConfig | null>(null)
 
+  console.log('AddActionProvider current: ', current, sheetRef)
+
   const register = useCallback((config: AddActionConfig) => {
     setCurrent(config)
 
