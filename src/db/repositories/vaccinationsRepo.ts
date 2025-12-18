@@ -30,6 +30,7 @@ export const vaccinationsRepo = {
     input: Omit<VaccinationRow, 'createdAt' | 'updatedAt'>,
   ): Promise<void> {
     const now = new Date().toISOString()
+
     await db.runAsync(
       `INSERT INTO vaccinations (
           id, kidId, title, dueDate, status, notes, completedAt, createdAt, updatedAt
@@ -62,13 +63,14 @@ export const vaccinationsRepo = {
 
   async markCompleted(db: SQLiteDatabase, id: string, completedAt?: string): Promise<void> {
     const now = new Date().toISOString()
+
     await db.runAsync(
       `UPDATE vaccinations
-       SET status = ${VACCINATION_STATUS.COMPLETED},
-           completedAt = ?,
-           updatedAt = ?
-       WHERE kidId = ?;`,
-      [completedAt ?? now, now, id],
+     SET status = ?,
+         completedAt = ?,
+         updatedAt = ?
+     WHERE id = ?;`,
+      [VACCINATION_STATUS.COMPLETED, completedAt ?? now, now, id],
     )
   },
 } as const
