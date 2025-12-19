@@ -8,6 +8,9 @@ import { getDb } from '@/db'
 import { vaccinationsRepo } from '@/db/repositories/vaccinationsRepo'
 import { VACCINATION_STATUS } from '@/types'
 import { newId } from '@/utils/newId'
+import { DatePickerField } from '@/components/DatePicker/DatePickerField'
+
+import { toISODate } from '@/utils/date'
 
 type AddVaccinationSheetContentProps = {
   onClose: () => void
@@ -19,14 +22,19 @@ function isISODateOnly(value: string): boolean {
 
 export const AddVaccinationSheetContent = ({ onClose }: AddVaccinationSheetContentProps) => {
   const activeKidId = useKidsStore(s => s.activeKidId)
+  const activeKid = useKidsStore(s => s.kids.find(k => k.id === s.activeKidId) ?? null)
+
   const loadByKid = useVaccinationStore(s => s.loadByKid)
 
   const [title, setTitle] = useState('')
-  const [dueDate, setDueDate] = useState('')
   const [notes, setNotes] = useState('')
 
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const minDate = activeKid?.birthDate ? new Date(activeKid.birthDate) : new Date()
+  const today = useMemo(() => toISODate(new Date()), [])
+  const [dueDate, setDueDate] = useState(today)
 
   const canSubmit = useMemo(() => {
     if (!activeKidId) return false
@@ -85,17 +93,12 @@ export const AddVaccinationSheetContent = ({ onClose }: AddVaccinationSheetConte
         disabled={submitting}
       />
 
-      <TextInput
-        label="Due date"
-        placeholder="YYYY-MM-DD"
+      <DatePickerField
+        label="Due Date"
         value={dueDate}
-        onChangeText={setDueDate}
-        keyboardType="numbers-and-punctuation"
-        disabled={submitting}
+        onChange={setDueDate}
+        minimumDate={minDate}
       />
-      <HelperText type={isISODateOnly(dueDate) || !dueDate ? 'info' : 'error'} visible>
-        Format: YYYY-MM-DD
-      </HelperText>
 
       <TextInput
         label="Notes (optional)"

@@ -14,6 +14,7 @@ export type KidState = {
   loadKids: () => Promise<void>
   addKid: (kid: Kid) => Promise<void>
   setActiveKid: (kidId: string) => void
+  getActiveKid: () => Kid | undefined
 }
 
 export const useKidsStore = create<KidState>((set, get) => ({
@@ -56,4 +57,10 @@ export const useKidsStore = create<KidState>((set, get) => ({
   },
 
   setActiveKid: kidId => set({ activeKidId: kidId }),
+
+  getActiveKid: () => {
+    const { kids, activeKidId } = get()
+    if (!activeKidId) return undefined
+    return kids.find(k => k.id === activeKidId)
+  },
 }))
