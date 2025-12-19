@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
-import { Text } from 'react-native-paper'
+import { Text, useTheme } from 'react-native-paper'
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet'
 
 import { AddActionContext } from './AddActionContext'
@@ -9,6 +9,8 @@ import { AddActionConfig } from './types'
 export const AddActionProvider = ({ children }: { children: ReactNode }) => {
   const sheetRef = useRef<BottomSheet>(null)
   const [current, setCurrent] = useState<AddActionConfig | null>(null)
+
+  const theme = useTheme()
 
   console.log('AddActionProvider current: ', current, sheetRef)
 
@@ -58,8 +60,8 @@ export const AddActionProvider = ({ children }: { children: ReactNode }) => {
         snapPoints={snapPoints}
         enablePanDownToClose
         backdropComponent={renderBackdrop}
-        backgroundStyle={styles.sheetContainer}
-        handleIndicatorStyle={{ backgroundColor: '#9CA3AF' }}
+        backgroundStyle={{ backgroundColor: theme.colors.elevation.level2 }}
+        handleIndicatorStyle={{ backgroundColor: theme.colors.onSurfaceVariant }}
         style={styles.sheetContainer}
       >
         <BottomSheetView style={styles.sheetContent}>
@@ -77,7 +79,6 @@ export const AddActionProvider = ({ children }: { children: ReactNode }) => {
 
 const styles = StyleSheet.create({
   sheetContainer: {
-    backgroundColor: '#3c3939',
     borderRadius: 16,
   },
   sheetContent: {

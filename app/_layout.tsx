@@ -1,13 +1,14 @@
 import { useEffect } from 'react'
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { ThemeProvider } from '@react-navigation/native'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { PaperProvider } from 'react-native-paper'
-import 'react-native-reanimated'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import 'react-native-reanimated'
 
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { getDb, configureDb, migrate, seedIfEmpty } from '@/db'
+import { getAppTheme } from '@/theme/appTheme'
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -15,6 +16,9 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme()
+
+  const scheme = colorScheme === 'dark' ? 'dark' : 'light'
+  const { paperTheme, navigationTheme } = getAppTheme(scheme)
 
   useEffect(() => {
     async function initDb() {
@@ -33,15 +37,15 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <PaperProvider>
+      <PaperProvider theme={paperTheme}>
+        <ThemeProvider value={navigationTheme}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
           </Stack>
           <StatusBar style="auto" />
-        </PaperProvider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </PaperProvider>
     </GestureHandlerRootView>
   )
 }
