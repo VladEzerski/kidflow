@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
-import { View } from 'react-native'
+import { View, Keyboard } from 'react-native'
 import { Button, HelperText, Text, TextInput } from 'react-native-paper'
 
 import { useKidsStore } from '@/features/kids/store/kidsStore'
@@ -91,6 +91,7 @@ export const AddVaccinationSheetContent = ({ onClose }: AddVaccinationSheetConte
         autoCapitalize="sentences"
         returnKeyType="next"
         disabled={submitting}
+        onSubmitEditing={Keyboard.dismiss}
       />
 
       <DatePickerField

@@ -1,10 +1,15 @@
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
-import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet'
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetScrollView,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet'
 
 import { AddActionContext } from './AddActionContext'
 import { AddActionConfig } from './types'
+import { FormWrapper } from '@/components/FormWrapper/FormWrapper'
 
 export const AddActionProvider = ({ children }: { children: ReactNode }) => {
   const sheetRef = useRef<BottomSheet>(null)
@@ -63,15 +68,20 @@ export const AddActionProvider = ({ children }: { children: ReactNode }) => {
         backgroundStyle={{ backgroundColor: theme.colors.elevation.level2 }}
         handleIndicatorStyle={{ backgroundColor: theme.colors.onSurfaceVariant }}
         style={styles.sheetContainer}
+        keyboardBehavior="interactive"
+        keyboardBlurBehavior="restore"
+        android_keyboardInputMode="adjustResize"
       >
-        <BottomSheetView style={styles.sheetContent}>
-          {current?.title && (
-            <Text variant="titleLarge" style={styles.sheetTitle}>
-              {current.title}
-            </Text>
-          )}
-          {current?.render?.() ?? <View />}
-        </BottomSheetView>
+        <FormWrapper>
+          <BottomSheetScrollView style={styles.sheetContent}>
+            {current?.title && (
+              <Text variant="titleLarge" style={styles.sheetTitle}>
+                {current.title}
+              </Text>
+            )}
+            {current?.render?.() ?? <View />}
+          </BottomSheetScrollView>
+        </FormWrapper>
       </BottomSheet>
     </AddActionContext.Provider>
   )
