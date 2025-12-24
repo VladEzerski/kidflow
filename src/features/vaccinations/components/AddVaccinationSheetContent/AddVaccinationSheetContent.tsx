@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState } from 'react'
-import { View, Keyboard } from 'react-native'
+import { useCallback, useMemo, useRef, useState } from 'react'
+import { View, TextInput as RNTextInput } from 'react-native'
 import { Button, HelperText, Text, TextInput } from 'react-native-paper'
 
 import { useKidsStore } from '@/features/kids/store/kidsStore'
@@ -32,6 +32,8 @@ export const AddVaccinationSheetContent = ({ onClose }: AddVaccinationSheetConte
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const notesRef = useRef<RNTextInput>(null)
+
   const minDate = activeKid?.birthDate ? new Date(activeKid.birthDate) : new Date()
   const today = useMemo(() => toISODate(new Date()), [])
   const [dueDate, setDueDate] = useState(today)
@@ -42,6 +44,12 @@ export const AddVaccinationSheetContent = ({ onClose }: AddVaccinationSheetConte
     if (!isISODateOnly(dueDate.trim())) return false
     return true
   }, [activeKidId, title, dueDate])
+
+  const clearForm = useCallback(() => {
+    setTitle('')
+    setNotes('')
+    setDueDate(today)
+  }, [today])
 
   const handleSubmit = useCallback(async () => {
     if (!activeKidId) {
@@ -71,6 +79,7 @@ export const AddVaccinationSheetContent = ({ onClose }: AddVaccinationSheetConte
       })
 
       await loadByKid(activeKidId)
+      clearForm()
       onClose()
     } catch (e) {
       console.error(e)
@@ -78,7 +87,7 @@ export const AddVaccinationSheetContent = ({ onClose }: AddVaccinationSheetConte
     } finally {
       setSubmitting(false)
     }
-  }, [activeKidId, canSubmit, dueDate, loadByKid, notes, onClose, title])
+  }, [activeKidId, canSubmit, dueDate, loadByKid, notes, onClose, title, clearForm])
 
   return (
     <View style={{ gap: 12 }}>
@@ -88,10 +97,9 @@ export const AddVaccinationSheetContent = ({ onClose }: AddVaccinationSheetConte
         label="Title"
         value={title}
         onChangeText={setTitle}
-        autoCapitalize="sentences"
         returnKeyType="next"
         disabled={submitting}
-        onSubmitEditing={Keyboard.dismiss}
+        onSubmitEditing={() => notesRef.current?.focus()}
       />
 
       <DatePickerField
@@ -102,12 +110,14 @@ export const AddVaccinationSheetContent = ({ onClose }: AddVaccinationSheetConte
       />
 
       <TextInput
+        ref={notesRef}
         label="Notes (optional)"
         value={notes}
         onChangeText={setNotes}
         multiline
         numberOfLines={4}
         disabled={submitting}
+        submitBehavior="blurAndSubmit"
       />
 
       {error ? (
