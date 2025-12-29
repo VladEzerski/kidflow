@@ -8,10 +8,11 @@ import { VaccinationCard } from '@/features/vaccinations/components/VaccinationC
 import { AddVaccinationSheetContent } from '@/features/vaccinations/components/AddVaccinationSheetContent/AddVaccinationSheetContent'
 import { useVaccinationStore } from '@/features/vaccinations/store/vaccinationsStore'
 import { useAddAction } from '@/features/addAction'
+import { SwipeRow } from '@/components/SwipeRow/SwipeRow'
 
 export default function HealthScreen() {
   const activeKidId = useKidsStore(s => s.activeKidId)
-  const { vaccinations, loadByKid } = useVaccinationStore()
+  const { vaccinations, loadByKid, markVaccinationDone, removeVaccination } = useVaccinationStore()
   const { register, close } = useAddAction()
 
   useEffect(() => {
@@ -42,7 +43,24 @@ export default function HealthScreen() {
         <FlatList
           data={vaccinations}
           keyExtractor={item => item.id}
-          renderItem={({ item }) => <VaccinationCard vaccination={item} />}
+          renderItem={({ item }) => (
+            <SwipeRow
+              rightActions={[
+                {
+                  key: 'done',
+                  icon: 'check',
+                  onPress: () => markVaccinationDone(item.id),
+                },
+                {
+                  key: 'delete',
+                  icon: 'trash-can-outline',
+                  onPress: () => removeVaccination(item.id),
+                },
+              ]}
+            >
+              <VaccinationCard vaccination={item} />
+            </SwipeRow>
+          )}
         />
       </View>
     </Screen>
