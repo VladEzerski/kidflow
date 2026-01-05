@@ -10,6 +10,7 @@ export type ActionButtonProps = {
   onPress: () => void
   backgroundColor: string
   iconColor: string
+  isDisabled?: boolean
 }
 
 export const ActionButton = ({
@@ -20,19 +21,27 @@ export const ActionButton = ({
   onPress,
   backgroundColor,
   iconColor,
+  isDisabled = false,
 }: ActionButtonProps) => {
   const animatedStyle = useAnimatedStyle(() => {
     const delay = index * 0.06
     const t = interpolate(progress.value, [0 + delay, 1], [0.2, 1], 'clamp')
+    const disabledOpacity = isDisabled ? 0.35 : 1
+
     return {
-      opacity: t,
+      opacity: t * disabledOpacity,
       transform: [{ scale: t }],
     }
-  }, [index])
+  }, [index, isDisabled])
 
   return (
     <Animated.View style={[styles.action, { width: actionWidth, backgroundColor }, animatedStyle]}>
-      <IconButton icon={icon} iconColor={iconColor} size={22} onPress={onPress} />
+      <IconButton
+        icon={icon}
+        iconColor={iconColor}
+        size={22}
+        onPress={isDisabled ? undefined : onPress}
+      />
     </Animated.View>
   )
 }
@@ -41,5 +50,6 @@ const styles = StyleSheet.create({
   action: {
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 8,
   },
 })

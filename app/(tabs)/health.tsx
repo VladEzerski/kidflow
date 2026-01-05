@@ -1,5 +1,5 @@
-import { useCallback, useEffect } from 'react'
-import { View, FlatList } from 'react-native'
+import { useCallback, useEffect, useMemo } from 'react'
+import { StyleSheet, View, FlatList } from 'react-native'
 import { useFocusEffect } from 'expo-router'
 
 import { Screen } from '@/layouts/Screen'
@@ -9,11 +9,31 @@ import { AddVaccinationSheetContent } from '@/features/vaccinations/components/A
 import { useVaccinationStore } from '@/features/vaccinations/store/vaccinationsStore'
 import { useAddAction } from '@/features/addAction'
 import { SwipeRow } from '@/components/SwipeRow/SwipeRow'
+import { Vaccination, VACCINATION_STATUS } from '@/types'
 
 export default function HealthScreen() {
   const activeKidId = useKidsStore(s => s.activeKidId)
   const { vaccinations, loadByKid, markVaccinationDone, removeVaccination } = useVaccinationStore()
   const { register, close } = useAddAction()
+
+  const rightActions = useCallback(
+    (item: Vaccination) => {
+      return [
+        {
+          key: 'done',
+          icon: 'check',
+          isDisabled: item.status === VACCINATION_STATUS.COMPLETED,
+          onPress: () => markVaccinationDone(item.id),
+        },
+        {
+          key: 'delete',
+          icon: 'trash-can-outline',
+          onPress: () => removeVaccination(item.id),
+        },
+      ]
+    },
+    [markVaccinationDone, removeVaccination],
+  )
 
   useEffect(() => {
     if (activeKidId) {
@@ -23,7 +43,6 @@ export default function HealthScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      console.log('Healh screen focused')
       const unregister = register({
         key: 'health',
         title: 'Add vaccination',
@@ -31,38 +50,33 @@ export default function HealthScreen() {
       })
 
       return () => {
-        console.log('Healh screen unfocused')
         unregister()
       }
     }, [register, close]),
   )
 
+  const keyExtractor = useCallback((item: Vaccination) => item.id, [])
+
+  const renderItem = useCallback(
+    ({ item }: { item: Vaccination }) => (
+      <SwipeRow rightActions={rightActions(item)}>
+        <VaccinationCard vaccination={item} />
+      </SwipeRow>
+    ),
+    [rightActions],
+  )
+
   return (
     <Screen title={'Health'}>
-      <View style={{ flex: 1 }}>
-        <FlatList
-          data={vaccinations}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <SwipeRow
-              rightActions={[
-                {
-                  key: 'done',
-                  icon: 'check',
-                  onPress: () => markVaccinationDone(item.id),
-                },
-                {
-                  key: 'delete',
-                  icon: 'trash-can-outline',
-                  onPress: () => removeVaccination(item.id),
-                },
-              ]}
-            >
-              <VaccinationCard vaccination={item} />
-            </SwipeRow>
-          )}
-        />
+      <View style={styles.container}>
+        <FlatList data={vaccinations} keyExtractor={keyExtractor} renderItem={renderItem} />
       </View>
     </Screen>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+})

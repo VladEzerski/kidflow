@@ -1,4 +1,4 @@
-import { RefObject, ReactNode, useCallback, useMemo } from 'react'
+import { RefObject, ReactNode, useCallback, useMemo, useRef } from 'react'
 import { StyleSheet, View } from 'react-native'
 import ReanimatedSwipeable, {
   type SwipeableMethods,
@@ -12,6 +12,7 @@ export type SwipeRowAction = {
   key: string
   icon: string
   onPress: () => void
+  isDisabled?: boolean
   variant?: 'default' | 'danger'
 }
 
@@ -24,6 +25,9 @@ type SwipeRowProps = {
 
 export const SwipeRow = ({ children, rightActions, actionWidth = 72, swipeRef }: SwipeRowProps) => {
   const theme = useTheme()
+
+  const innerRef = useRef<SwipeableMethods | null>(null)
+  const refToUse = swipeRef ?? innerRef
 
   const totalWidth = useMemo(
     () => rightActions.length * actionWidth,
@@ -41,7 +45,11 @@ export const SwipeRow = ({ children, rightActions, actionWidth = 72, swipeRef }:
               index={idx}
               actionWidth={actionWidth}
               icon={action.icon}
-              onPress={action.onPress}
+              isDisabled={action.isDisabled}
+              onPress={() => {
+                refToUse.current?.close()
+                action.onPress()
+              }}
               backgroundColor={
                 action.variant === 'danger'
                   ? theme.colors.errorContainer
@@ -57,12 +65,12 @@ export const SwipeRow = ({ children, rightActions, actionWidth = 72, swipeRef }:
         </View>
       )
     },
-    [rightActions, totalWidth, actionWidth, theme.colors],
+    [rightActions, totalWidth, actionWidth, theme.colors, refToUse],
   )
 
   return (
     <ReanimatedSwipeable
-      ref={swipeRef}
+      ref={refToUse}
       friction={1.5}
       rightThreshold={24}
       overshootRight={false}
